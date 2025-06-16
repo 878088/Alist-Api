@@ -1,97 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN" data-theme="light" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OpenList Token 获取工具</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        :root {
-            --bg-color-light: #ffffff;
-            --text-color-light: #000000;
-            --bg-color-dark: #1e1e2f;
-            --text-color-dark: #f0f0f0;
-            --accent-color: #00d1b2;
-        }
-
-        [data-theme="light"] body {
-            background-color: var(--bg-color-light);
-            color: var(--text-color-light);
-        }
-
-        [data-theme="dark"] body {
-            background-color: var(--bg-color-dark);
-            color: var(--text-color-dark);
-        }
-
-        .form-container {
-            max-width: 800px;
-            margin: 3rem auto;
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-            background: inherit;
-            backdrop-filter: blur(10px);
-        }
-
-        label {
-            font-weight: 600;
-        }
-
-        .form-control:read-only {
-            background-color: #f5f5f5;
-            cursor: pointer;
-        }
-
-        .toggle-theme {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        [data-theme="dark"] body {
-            background-color: var(--bg-color-dark);
-            color: var(--text-color-dark);
-        }
-
-        [data-theme="dark"] .form-control {
-            background-color: #2a2a3b;
-            color: #f0f0f0;
-            border-color: #444;
-        }
-
-        [data-theme="dark"] .form-control:read-only {
-            background-color: #2a2a3b;
-            color: #ccc;
-            border-color: #444;
-        }
-
-        [data-theme="dark"] .form-select {
-            background-color: #2a2a3b;
-            color: #f0f0f0;
-            border-color: #444;
-        }
-
-        [data-theme="dark"] .btn {
-            background-color: #00bfa5;
-            color: #ffffff;
-            border: none;
-        }
-
-        [data-theme="dark"] .btn:hover {
-            background-color: #00a58e;
-            color: #ffffff;
-        }
-
-        [data-theme="dark"] p {
-            color: #ffffff;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <link href="https://jsd.oplist.org/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://jsd.oplist.org/npm/sweetalert2@11.22.0/dist/sweetalert2.all.min.js"></script>
 </head>
 <body>
 <div class="toggle-theme">
@@ -103,231 +18,121 @@
         <label for="site-select" class="form-label">网盘名称</label>
         <select id="site-select" class="form-select">
             <!--            <option value="onedrive_pr" selected>OneDrive 个人账户</option>-->
-            <option value="onedrive_go">OneDrive 企业版本</option>
+            <option value="onedrive_go" selected>OneDrive 企业版本</option>
             <option value="onedrive_cn">OneDrive 世纪互联</option>
             <option value="onedrive_us">OneDrive 美国版本</option>
             <option value="onedrive_de">OneDrive 德国版本</option>
-            <option value="alicloud_qr">阿里网盘 扫码登录</option>
+            <option value="alicloud_qr">阿里网盘 应用登录</option>
+            <option value="alicloud_oa">阿里云盘 直接登录</option>
             <option value="baiduyun_go">百度网盘 验证登录</option>
+            <option value="baiduyun_ob">百度网盘 OOB 验证</option>
             <option value="115cloud_go">115 网盘 验证登录</option>
-            <option value="googleui_go">Google Drive Team</option>
+            <option value="123cloud_go">123 网盘 直接登录</option>
+            <option value="googleui_go">GoogleDrive Login</option>
+            <option value="yandexui_go">YandexDrive Login</option>
         </select>
+    </div>
 
-        <div class="mb-3" style="margin-top: 15px">
-            <input type="checkbox" id="use-openlist-key" class="form-check-input">
-            <label for="use-openlist-key" class="form-check-label">使用 OpenList 提供的API</label>
-        </div>
+    <div class="mb-3" style="margin-top: 15px">
+        <input type="checkbox" id="server_use" class="form-check-input">
+        <label for="server_use" class="form-check-label">使用 OpenList 提供的参数</label>
+    </div>
 
-        <div class="mb-3">
-            <label for="client-id" class="form-label">客户端 ID</label>
-            <input type="text" id="client-id" class="form-control">
-        </div>
+    <div class="mb-3" id="client-id-view">
+        <label for="client-id" class="form-label">客户端ID（ClientID/AppID）</label>
+        <input type="text" id="client-id" class="form-control">
+    </div>
 
-        <div class="mb-3">
-            <label for="app-secret" class="form-label">应用机密</label>
-            <input type="text" id="app-secret" class="form-control">
-        </div>
+    <div class="mb-3">
+        <label for="app-secret" class="form-label">应用秘钥 (AppKey/Secret)</label>
+        <input type="text" id="app-secret" class="form-control">
+    </div>
 
-        <div class="mb-3" id="secret-key-view">
-            <label for="secret-key" class="form-label">访问密钥（SecretKey）</label>
-            <input type="text" id="secret-key" class="form-control">
-        </div>
+    <div class="mb-3" id="secret-key-view">
+        <label for="secret-key" class="form-label">访问秘钥（SecretKey/Key）</label>
+        <input type="text" id="secret-key" class="form-control">
+    </div>
 
-        <div class="mb-3">
-            <label for="callback-url" class="form-label">回调地址</label>
-            <input type="text" id="callback-url" class="form-control" value="https://api.oplist.org/onedrive/callback"
-                   readonly
-                   onclick="autoCopy(this)">
-        </div>
+    <div class="mb-3">
+        <label for="callback-url" class="form-label">回调地址</label>
+        <input type="text" id="callback-url" class="form-control" value="https://api.oplist.org/onedrive/callback"
+               readonly onclick="autoCopy(this)">
+    </div>
 
-        <div class="d-grid gap-2 mb-3">
-            <button class="btn btn-primary" onclick="getLogin()">获取 Token</button>
-        </div>
+    <div class="d-grid gap-2 mb-3">
+        <button class="btn btn-primary" onclick="getLogin()">获取 Token</button>
+    </div>
 
-        <div class="mb-3">
-            <label for="access-token" class="form-label">访问秘钥</label>
-            <textarea id="access-token" class="form-control" rows="3" readonly onclick="autoCopy(this)"></textarea>
-        </div>
+    <div class="d-grid gap-2 mb-3">
+        <button class="btn btn-primary" onclick="getLogin(true)">刷新 Token</button>
+    </div>
 
-        <div class="mb-3">
-            <label for="refresh-token" class="form-label">刷新秘钥</label>
-            <textarea id="refresh-token" class="form-control" rows="3" readonly onclick="autoCopy(this)"></textarea>
-        </div>
+    <div class="mb-3">
+        <label for="access-token" class="form-label">访问秘钥</label>
+        <textarea id="access-token" class="form-control" rows="3" readonly onclick="autoCopy(this)"></textarea>
+    </div>
 
-        <div class="text-muted text-center">
-            <p style="text-align:center">
-                本工具所有信息只以Cookie形式存储于浏览器本地<br>
-                开源于 <a href="https://github.com/OpenListTeam/cf-worker-api" target="_blank">GitHub</a> | By <a
-                    href="https://github.com/OpenListTeam"
-                    target="_blank">OpenListTeam</a>
-            </p>
-        </div>
+    <div class="mb-3">
+        <label for="refresh-token" class="form-label">刷新秘钥</label>
+        <textarea id="refresh-token" class="form-control" rows="3" readonly onclick="autoCopy(this)"></textarea>
+    </div>
+    <div class="mb-3" id="sharepoint-url-view">
+        <label for="sharepoint-url" class="form-label">SharePoint Site URL</label>
+        <label for="sharepoint-url"></label><input type="text" id="sharepoint-url" class="form-control">
+    </div>
+    <div class="d-grid gap-2 mb-3" id="sharepoint-btn-view">
+        <button class="btn btn-primary" onclick="getSiteID()">获取 SharePoint 站点ID</button>
+    </div>
+    <div class="mb-3" id="sharepoint-uid-view">
+        <label for="sharepoint-id" class="form-label">SharePoint Site ID</label>
+        <textarea id="sharepoint-id" class="form-control" rows="3" readonly onclick="autoCopy(this)"></textarea>
+    </div>
+    <div class="text-muted text-center">
+        <p style="text-align:center">
+            本工具所有信息只以Cookie形式存储于浏览器本地<br>
+            开源于 <a href="https://github.com/OpenListTeam/cf-worker-api" target="_blank">GitHub</a> | By <a
+                href="https://github.com/OpenListTeam"
+                target="_blank">OpenListTeam</a>
+        </p>
     </div>
 </div>
 
+
+<!-- 阿里云盘扫码v2模态框 -->
+<div id="qr-modal" class="qr-modal">
+    <div class="qr-modal-content">
+        <span class="close-btn" onclick="closeQRModal()">&times;</span>
+        <h4>阿里云盘扫码登录v2</h4>
+        <div id="qr-code-container" class="qr-code-container" style="display: none;">
+            <div id="qr-code-display"></div>
+        </div>
+        <div id="qr-status" class="qr-status" style="display: none;"></div>
+        <div class="mt-3">
+            <button id="refresh-qr-btn" class="btn btn-secondary" onclick="refreshQRCode()" style="display: none;">刷新二维码</button>
+            <button class="btn btn-secondary" onclick="closeQRModal()">关闭</button>
+        </div>
+    </div>
+</div>
+<script src="/static/login.js"></script>
+<script src="/static/token.js"></script>
+<script src="/static/theme.js"></script>
+<script src="/static/aliv2.js"></script>
+<script src="/static/spoid.js"></script>
+<script src="/static/input.js"></script>
 <script>
-    let intervalId;
-
-    // 获取登录秘钥 #######################################################
-    async function getLogin() {
-        let apps_uuid = document.getElementById("client-id").value;
-        let apps_keys = document.getElementById("app-secret").value;
-        let apps_type = document.getElementById("site-select").value;
-        let secret_key = document.getElementById("secret-key").value;
-        if (apps_uuid === "" || apps_keys === "") {
-            Swal.fire({
-                position: 'top',
-                icon: 'info',
-                title: '获取失败',
-                text: '请先填写客户端ID和应用机密',
-                showConfirmButton: true,
-            });
-            return;
-        }
-        let apps_subs = apps_type.split("_")[0]
-        let post_urls = "/" + apps_subs + "/requests?client_uid=" + apps_uuid
-            + "&client_key=" + apps_keys + "&apps_types=" + apps_type;
-        if (apps_subs === "baiduyun") post_urls += "&secret_key=" + secret_key
-        try {
-            const response = await fetch(post_urls, {
-                method: 'GET', headers: {'Content-Type': 'application/json'}
-            });
-            // 解析响应内容 ===============================================
-            const response_data = await response.json();
-            if (response.status === 200) {
-                if (apps_subs === "onedrive" || apps_subs === "115cloud"
-                || apps_subs === "baiduyun") {
-                    window.location.href = response_data.text;
-                }
-                if (apps_type === "alicloud_qr") {
-                    let sid = response_data.sid;
-                    await Swal.fire({
-                        position: 'top',
-                        icon: 'info',
-                        title: '扫码登录',
-                        html: `<div>请扫码登录，完成后点确定</div>` +
-                            `<img src="${response_data.text}" alt="">`,
-                        showConfirmButton: true
-                    });
-                    post_urls = "/alicloud/callback" +
-                        "?client_id=" + apps_uuid +
-                        "&client_secret=" + apps_keys +
-                        "&grant_type=" + "authorization_code" +
-                        "&code=" + sid
-                    let auth_post = await fetch(post_urls, {method: 'GET'});
-                    let auth_data = await auth_post.json();
-                    if (auth_post.status === 200) {
-                        window.location.href = `/?access_token=${auth_data.access_token}`
-                            + `&refresh_token=${auth_data.refresh_token}`
-                            + `&client_uid=${apps_uuid}`
-                            + `&client_key=${apps_keys}`;
-                    }
-                }
-            } else Swal.fire({
-                icon: 'error',
-                title: "获取秘钥失败: " + response_data.text,
-                showConfirmButton: true,
-                timer: 1000
-            });
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: '获取秘钥失败: ' + error,
-                showConfirmButton: true,
-                timer: 1000
-            });
-        }
-    }
-
-    // 自动复制内容 #####################################################
-    function autoCopy(on_element) {
-        // if (on_element.innerText === "") return;
-        navigator.clipboard.writeText(on_element.value).then(() => {
-            // 显示复制成功的提示
-            Swal.fire({
-                position: 'top',
-                icon: 'success',
-                title: '内容已复制',
-                showConfirmButton: false,
-                timer: 700
-            });
-        }).catch(err => {
-            // 复制失败时的处理
-            console.error('无法复制文本：', err);
-            Swal.fire({
-                position: 'top',
-                icon: 'error',
-                title: '复制失败',
-                text: '请手动复制',
-                showConfirmButton: true,
-            });
-        })
-    }
-
-    async function getToken() {
-        const strSearch = window.location.search;
-        const urlParams = new URLSearchParams(strSearch);
-        const client_uid = urlParams.get("client_uid");
-        const secret_key = urlParams.get("secret_key");
-        const driver_txt = urlParams.get("driver_txt");
-        const client_key = urlParams.get("client_key");
-        const access_token = urlParams.get("access_token");
-        const refresh_token = urlParams.get("refresh_token");
-        const message_err = urlParams.get("message_err");
-        document.getElementById("site-select").value = driver_txt;
-        document.getElementById("app-secret").value = client_key;
-        document.getElementById("client-id").value = client_uid;
-        document.getElementById("access-token").value = access_token;
-        document.getElementById("refresh-token").value = refresh_token;
-        if(secret_key)
-            document.getElementById("secret-key").value = secret_key;
-        // 获取select元素和输入框元素
-        const siteSelect = document.getElementById('site-select');
-        const callbackUrlInput = document.getElementById('callback-url');
-
-        // 监听select的变化
-        siteSelect.addEventListener('change', function () {
-            const selectedValue = this.value.split("_")[0]; // 获取选中的value
-            // 更新输入框的值
-            callbackUrlInput.value = `https://api.oplist.org/${selectedValue}/callback`;
-            document.getElementById('secret-key-view').hidden = true;
-            if (siteSelect.value === "baiduyun_go") {
-                document.getElementById('secret-key-view').hidden = false;
-            }
-
-        });
-        // 页面加载时初始化回调地址
-        window.onload = function () {
-            siteSelect.dispatchEvent(new Event('change'));
-        };
-
-        if (message_err) {
-            Swal.fire({
-                position: 'top',
-                icon: 'error',
-                title: '授权失败',
-                html: message_err,
-                showConfirmButton: true,
-            });
-        }
-
-
-    }
-
-    //手动切换主题模式
-    function toggleTheme() {
-        const html = document.documentElement;
-        const current = html.getAttribute("data-theme");
-        html.setAttribute("data-theme", current === "dark" ? "light" : "dark");
-    }
-
-    // 自动切换暗黑模式
-    (function () {
-        const hour = new Date().getHours();
-        if (hour < 6 || hour >= 18) document.documentElement.setAttribute("data-theme", "dark");
-        getToken();
-    })();
     getToken();
+    // 阿里云盘扫码v2相关变量
+    let alicloud2SessionId = null;
+    let alicloud2CheckInterval = null;
+    let alicloud2StartTime = null;
+    let clientFingerprint = null;
+    // 点击模态框外部关闭
+    window.onclick = function (event) {
+        const modal = document.getElementById('qr-modal');
+        if (event.target === modal) {
+            closeQRModal();
+        }
+    }
 </script>
 </body>
 </html>
